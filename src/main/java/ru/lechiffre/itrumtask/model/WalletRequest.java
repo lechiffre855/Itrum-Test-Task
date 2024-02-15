@@ -1,14 +1,14 @@
 package ru.lechiffre.itrumtask.model;
 
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 
 import java.util.UUID;
 
 
 public class WalletRequest {
-    @NotBlank(message = "You must put UUID to the request")
+    @NotNull(message = "You must put UUID to the request")
     private UUID walletId;
     @Pattern(regexp = "DEPOSIT|WITHDRAW", message = "Transaction type must be either DEPOSIT or WITHDRAW")
     private String operationType;

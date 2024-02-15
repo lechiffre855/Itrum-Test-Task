@@ -4,6 +4,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.*;
@@ -30,7 +31,7 @@ public class WalletController {
     }
 
     @PostMapping("/wallet")
-    public ResponseEntity<HttpStatus> postWallet(@RequestBody @Valid WalletRequest walletRequest, BindingResult bindingResult){
+    public ResponseEntity<String> postWallet(@RequestBody @Valid WalletRequest walletRequest, BindingResult bindingResult){
 
         if (bindingResult.hasErrors()){
             StringBuilder errorMsg = new StringBuilder();
@@ -46,7 +47,7 @@ public class WalletController {
 
         walletService.postWallet(walletRequest);
 
-        return ResponseEntity.ok(HttpStatus.OK);
+        return new ResponseEntity<>(walletService.getResponseMessage(), HttpStatus.OK);
     }
 
     @GetMapping("/wallets/{WALLET_UUID}")
@@ -74,6 +75,14 @@ public class WalletController {
     private ResponseEntity<WalletErrorResponse> handleException(WalletNotWithdrawException e) {
         WalletErrorResponse response = new WalletErrorResponse(
                 e.getMessage(),
+                System.currentTimeMillis()
+        );
+        return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);
+    }
+    @ExceptionHandler
+    private ResponseEntity<WalletErrorResponse> handleException (HttpMessageNotReadableException e) {
+        WalletErrorResponse response = new WalletErrorResponse(
+                ("You posted a invalid JSON-request. " + e.getMessage()),
                 System.currentTimeMillis()
         );
         return new ResponseEntity<>(response, HttpStatus.BAD_REQUEST);

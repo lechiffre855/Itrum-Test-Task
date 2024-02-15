@@ -24,6 +24,11 @@ public class WalletService {
         this.walletRepository = walletRepository;
     }
 
+    private String responseMessage = "";
+    public String getResponseMessage() {
+        return responseMessage;
+    }
+
     public Wallet getWallet(UUID uuid){
         Optional<Wallet> foundWallet = walletRepository.findById(uuid);
 
@@ -37,21 +42,25 @@ public class WalletService {
         if (walletRequest.getOperationType().equals("DEPOSIT")) {
             if (foundWallet.isEmpty()){
                 walletRepository.save(new Wallet(walletRequest.getWalletId(), walletRequest.getAmount()));
+                responseMessage = "The account with specified requisites has been successfully created and replenished.";
             } else {
                 Double tempAmount = foundWallet.get().getAmount();
                 walletRepository.save(new Wallet(walletRequest.getWalletId(), (walletRequest.getAmount()) + tempAmount));
+                responseMessage = "The account with specified requisites has been successfully replenished.";
             }
 
         } else if (walletRequest.getOperationType().equals("WITHDRAW")) {
             if (foundWallet.isPresent()) {
                 if (foundWallet.get().getAmount() > walletRequest.getAmount()) {
                     Double tempAmount = foundWallet.get().getAmount();
-                    walletRepository.save(new Wallet(walletRequest.getWalletId(), (walletRequest.getAmount()) + tempAmount));
-                } else if (foundWallet.get().getAmount() == walletRequest.getAmount())
+                    walletRepository.save(new Wallet(walletRequest.getWalletId(), (tempAmount - walletRequest.getAmount())));
+                    responseMessage = "The given amount has been withdrawn from the specified account.";
+                } else if (foundWallet.get().getAmount().equals(walletRequest.getAmount())) {
                     walletRepository.delete(new Wallet(walletRequest.getWalletId(), walletRequest.getAmount()));
-                else
+                    responseMessage = "The given amount had been withdrawn from the specified account and then the account was closed.";
+                } else
                     throw new WalletNotWithdrawException("You do not have enough funds in your account. " +
-                            "The amount in your request is more than the amount in your account (" + foundWallet.get().getAmount() + ").");
+                            "The amount in your request is more than the amount on your account (" + foundWallet.get().getAmount() + "). Try again!");
             } else
                 throw new WalletNotFoundException();
         }
