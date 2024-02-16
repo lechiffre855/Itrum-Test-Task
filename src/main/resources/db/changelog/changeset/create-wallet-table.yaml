@@ -1,0 +1,18 @@
+databaseChangeLog:
+  - changeSet:
+      id: create-wallet-table
+      author: Lechiffre
+      changes:
+        - createTable:
+            tableName: wallet
+            columns:
+              - column:
+                  name: id
+                  type: uuid
+                  autoIncrement: false
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: amount
+                  type: double
