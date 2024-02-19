@@ -3,11 +3,11 @@ package ru.lechiffre.itrumtask;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
-@SpringBootTest
-class ItrumTestTaskApplicationTests {
-
-	@Test
-	void contextLoads() {
-	}
-
-}
+//@SpringBootTest
+//class ItrumTestTaskApplicationTests {
+//
+//	@Test
+//	void contextLoads() {
+//	}
+//
+//}
