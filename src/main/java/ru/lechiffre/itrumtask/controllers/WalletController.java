@@ -47,7 +47,7 @@ public class WalletController {
 
         walletService.postWallet(walletRequest);
 
-        return new ResponseEntity<>(walletService.getResponseMessage(), HttpStatus.OK);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("/wallets/{WALLET_UUID}")
