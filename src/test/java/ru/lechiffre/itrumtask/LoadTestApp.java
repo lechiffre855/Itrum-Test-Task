@@ -1,19 +1,19 @@
-package ru.lechiffre.itrumtask;
-
-import com.github.javafaker.Faker;
-import net.minidev.json.JSONObject;
-import org.apache.http.entity.ContentType;
-import org.apache.jmeter.protocol.http.util.HTTPConstants;
-import org.junit.jupiter.api.Test;
-import us.abstracta.jmeter.javadsl.core.TestPlanStats;
-
-import java.io.IOException;
-import java.time.Duration;
-import java.util.Random;
-import java.util.UUID;
-
-import static org.assertj.core.api.Assertions.assertThat;
-import static us.abstracta.jmeter.javadsl.JmeterDsl.*;
+//package ru.lechiffre.itrumtask;
+//
+//import com.github.javafaker.Faker;
+//import net.minidev.json.JSONObject;
+//import org.apache.http.entity.ContentType;
+//import org.apache.jmeter.protocol.http.util.HTTPConstants;
+//import org.junit.jupiter.api.Test;
+//import us.abstracta.jmeter.javadsl.core.TestPlanStats;
+//
+//import java.io.IOException;
+//import java.time.Duration;
+//import java.util.Random;
+//import java.util.UUID;
+//
+//import static org.assertj.core.api.Assertions.assertThat;
+//import static us.abstracta.jmeter.javadsl.JmeterDsl.*;
 
 //public class LoadTestApp {
 //    class FakeGenerator {

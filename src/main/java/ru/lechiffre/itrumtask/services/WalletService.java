@@ -2,7 +2,9 @@ package ru.lechiffre.itrumtask.services;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import ru.lechiffre.itrumtask.model.Wallet;
 import ru.lechiffre.itrumtask.model.WalletRequest;
@@ -79,7 +81,8 @@ public class WalletService {
 //        }
 //    }
 
-    @Transactional
+    @Transactional(isolation = Isolation.REPEATABLE_READ, timeout = 10)
+    @Retryable(maxAttempts = 20)
     public void postWalletInternal(WalletRequest walletRequest){
         Optional<Wallet> foundWallet = walletRepository.findById(walletRequest.getWalletId());
 
