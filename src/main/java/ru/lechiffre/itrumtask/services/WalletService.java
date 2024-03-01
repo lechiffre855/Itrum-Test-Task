@@ -81,8 +81,8 @@ public class WalletService {
 //        }
 //    }
 
-    @Transactional(isolation = Isolation.REPEATABLE_READ, timeout = 10)
-    @Retryable(maxAttempts = 20)
+    @Transactional(isolation = Isolation.SERIALIZABLE)
+    @Retryable(maxAttempts = 40)
     public void postWalletInternal(WalletRequest walletRequest){
         Optional<Wallet> foundWallet = walletRepository.findById(walletRequest.getWalletId());
 
