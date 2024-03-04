@@ -1,9 +1,6 @@
 package ru.lechiffre.itrumtask.model;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 
 import java.util.UUID;
 
@@ -12,6 +9,9 @@ import java.util.UUID;
 public class Wallet {
     @Id
     @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private int id;
+    @Column(name = "wallet_id")
     private UUID walletId;
     @Column(name = "amount")
     private Double amount;
@@ -21,6 +21,14 @@ public class Wallet {
     public Wallet(UUID walletId, Double amount) {
         this.walletId = walletId;
         this.amount = amount;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public UUID getWalletId() {

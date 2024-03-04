@@ -10,6 +10,7 @@ import java.util.Optional;
 import java.util.UUID;
 
 @Repository
-public interface WalletRepository extends JpaRepository<Wallet, UUID> {
-
+public interface WalletRepository extends JpaRepository<Wallet, Integer> {
+//    @Lock(value = LockModeType.PESSIMISTIC_WRITE)
+    Optional<Wallet> findByWalletId(UUID uuid);
 }

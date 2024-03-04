@@ -8,10 +8,15 @@ databaseChangeLog:
             columns:
               - column:
                   name: id
-                  type: uuid
-                  autoIncrement: false
+                  type: int
+                  autoIncrement: true
                   constraints:
                     primaryKey: true
+                    nullable: false
+              - column:
+                  name: wallet_id
+                  type: uuid
+                  constraints:
                     nullable: false
               - column:
                   name: amount

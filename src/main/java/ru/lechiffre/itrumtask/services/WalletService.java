@@ -21,7 +21,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 @Service
-@Transactional(readOnly = true)
 public class WalletService {
 
     private final WalletRepository walletRepository;
@@ -37,8 +36,9 @@ public class WalletService {
 //        return responseMessage;
 //    }
 
+    @Transactional
     public Wallet getWallet(UUID uuid){
-        Optional<Wallet> foundWallet = walletRepository.findById(uuid);
+        Optional<Wallet> foundWallet = walletRepository.findByWalletId(uuid);
 
         return foundWallet.orElseThrow(WalletNotFoundException::new);
     }
@@ -81,29 +81,32 @@ public class WalletService {
 //        }
 //    }
 
-    @Transactional(isolation = Isolation.SERIALIZABLE)
-    @Retryable(maxAttempts = 40)
+    @Transactional
     public void postWalletInternal(WalletRequest walletRequest){
-        Optional<Wallet> foundWallet = walletRepository.findById(walletRequest.getWalletId());
+        Optional<Wallet> foundWallet = walletRepository.findByWalletId(walletRequest.getWalletId());
 
         if (walletRequest.getOperationType().equals("DEPOSIT")) {
             if (foundWallet.isEmpty()){
                 walletRepository.save(new Wallet(walletRequest.getWalletId(), walletRequest.getAmount()));
 //                responseMessage = "The account with specified requisites has been successfully created and replenished.";
             } else {
-                Double tempAmount = foundWallet.get().getAmount();
-                walletRepository.save(new Wallet(walletRequest.getWalletId(), (walletRequest.getAmount()) + tempAmount));
+                Double tempAmount = foundWallet.get().getAmount() + walletRequest.getAmount();
+                Wallet foundWallet1 = foundWallet.get();
+                foundWallet1.setAmount(tempAmount);
+                walletRepository.save(foundWallet1);
 //                responseMessage = tempAmount + "  " + foundWallet.get().getAmount().toString() + " The account with specified requisites has been successfully replenished.";
             }
 
         } else if (walletRequest.getOperationType().equals("WITHDRAW")) {
             if (foundWallet.isPresent()) {
                 if (foundWallet.get().getAmount() > walletRequest.getAmount()) {
-                    Double tempAmount = foundWallet.get().getAmount();
-                    walletRepository.save(new Wallet(walletRequest.getWalletId(), (tempAmount - walletRequest.getAmount())));
+                    Double tempAmount = foundWallet.get().getAmount() - walletRequest.getAmount();
+                    Wallet foundWallet1 = foundWallet.get();
+                    foundWallet1.setAmount(tempAmount);
+                    walletRepository.save(foundWallet1);
 //                    responseMessage = "The given amount has been withdrawn from the specified account.";
                 } else if (foundWallet.get().getAmount().equals(walletRequest.getAmount())) {
-                    walletRepository.delete(new Wallet(walletRequest.getWalletId(), walletRequest.getAmount()));
+                    walletRepository.delete(foundWallet.get());
 //                    responseMessage = "The given amount had been withdrawn from the specified account and then the account was closed.";
                 } else
                     throw new WalletNotWithdrawException("You do not have enough funds in your account. " +
@@ -114,3 +117,4 @@ public class WalletService {
     }
 
 }
+
